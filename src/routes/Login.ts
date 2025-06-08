@@ -71,7 +71,7 @@ export function buildLoginRoutes(container: ServiceContainer<AppServices>) {
       const redirectUrl = getGoogleAuthUrl();
       return redirect(redirectUrl, 302);
     })
-    .get("/callback", async ({ query, cookie, requestAt }) => {
+    .get("/callback", async ({ query, cookie, requestAt, redirect }) => {
       const sessionCookie = cookie[SESSION_COOKIE_NAME];
       const { code } = query;
       const client = getOauth2Client();
@@ -100,7 +100,7 @@ export function buildLoginRoutes(container: ServiceContainer<AppServices>) {
       sessionCookie.value = newSessionId;
       setCookieLifetime(sessionCookie, expiredAt, requestAt);
       setSecureCookie(sessionCookie);
-      return `登入成功，歡迎 ${userId}！`;
+      return redirect(BASE_URL, 302);
     })
     .get("/logout", async ({ cookie }) => {
       const sessionId = cookie[SESSION_COOKIE_NAME].value;

@@ -74,19 +74,10 @@ export async function buildServerContext(
 
 function buildServer(container: ServiceContainer<AppServices>) {
   const logger = container.resolve("Logger").extend("Server");
-  const { version, name } = container.resolve("AppInfo");
   const app = new Elysia()
     .use(buildRequestMonitor(container))
     .use(buildLoginRoutes(container))
-    .use(buildServeStaticRoutes(container))
-    .get(
-      "/",
-      ({ set }) => {
-        set.headers["Content-Type"] = "text/html";
-        return `${name}. version ${version}  <a href="./swagger">API Docs</a>`;
-      },
-      { detail: { summary: "版本資訊" } }
-    );
+    .use(buildServeStaticRoutes(container));
 
   return {
     app,
