@@ -1,0 +1,29 @@
+trailingComma: "es5"
+semi: true
+singleQuote: false
+# 以下為 @trivago/prettier-plugin-sort-imports 的設定
+plugins:
+  - "./node_modules/@trivago/prettier-plugin-sort-imports/lib/src/index.js"
+importOrder:
+  # 1. 框架核心（最常用）
+  - "^elysia$"
+  - "^@elysiajs/.*"
+  - "^cac$"
+
+  # 2. 執行環境原生平台
+  - "^bun$"
+  - "^node:.*"
+
+  # 3. 其他第三方
+  - "<THIRD_PARTY_MODULES>"
+
+  # 4. 應用層 alias（src/*）
+  - "^@/.*"
+
+  # 5. 測試層 alias（test/*）
+  - "^~test/.*"
+
+  # 6. 相對路徑
+  - "^[./]"
+importOrderSeparation: true
+importOrderSortSpecifiers: true

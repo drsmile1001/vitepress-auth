@@ -1,0 +1,14 @@
+**/.git
+**/.DS_Store
+**/node_modules
+**/dist
+**/apps
+**/test
+**/tools
+Dockerfile*
+.dockerignore
+.git
+.gitignore
+.vscode
+*.tar
+.env*

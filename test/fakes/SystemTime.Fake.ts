@@ -1,0 +1,17 @@
+import type { SystemTime } from "@/services/SystemTime.Interface";
+
+export class SystemTimeFake implements SystemTime {
+  private currentTime: number;
+  constructor(initialTime: Date = new Date()) {
+    this.currentTime = initialTime.getTime();
+  }
+  now() {
+    return new Date(this.currentTime);
+  }
+  advanceBy(milliseconds: number): void {
+    this.currentTime += milliseconds;
+  }
+  setTime(newTime: Date): void {
+    this.currentTime = newTime.getTime();
+  }
+}
