@@ -1,7 +1,7 @@
 {
-  "name": "vitepress-auth",
+  "name": "vitepress-auth-server",
   "version": "0.1.0",
-  "description": "vitepress-auth",
+  "description": "vitepress-auth-server",
   "scripts": {
     "dev": "bun run --watch src/index.ts serve",
     "start": "NODE_ENV=production bun run src/index.ts serve",

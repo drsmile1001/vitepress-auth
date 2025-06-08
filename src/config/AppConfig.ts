@@ -14,7 +14,6 @@ export const getLogConfig = buildConfigFactoryEnv(
 export type IntegrationConfig = ReturnType<typeof getIntegrationConfig>;
 const getIntegrationConfigBase = buildConfigFactoryEnv(
   t.Object({
-    PUBLIC_BASE_URL: t.String(),
     BASE_URL: t.String(),
     COOKIE_PREFIX: t.String(),
     COOKIE_SECURE: t.BooleanString(),
