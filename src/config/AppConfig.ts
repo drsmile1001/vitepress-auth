@@ -18,6 +18,8 @@ const getIntegrationConfigBase = buildConfigFactoryEnv(
     BASE_URL: t.String(),
     COOKIE_PREFIX: t.String(),
     COOKIE_SECURE: t.BooleanString(),
+    GOOGLE_CLIENT_ID: t.String(),
+    GOOGLE_CLIENT_SECRET: t.String(),
   })
 );
 export const getIntegrationConfig = () => {
