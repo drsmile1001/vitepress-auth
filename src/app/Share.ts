@@ -1,4 +1,4 @@
-import { getIntegrationConfig } from "@/config/AppConfig";
+import { getIntegrationConfig, getRoleConfig } from "@/config/AppConfig";
 import type { NamedFinalizer } from "@/utils/Finalizable";
 import type {
   ServiceContainer,
@@ -43,7 +43,7 @@ export const initializeSystemContext: ContextInitializer<
   NoDependency,
   SystemContext
 > = async (container) => {
-  const { SystemTimeReal } = await import("@/services/SystemTime.Real");
+  const { SystemTimeReal } = await import("@/services/SystemTimeReal");
   container.register("SystemTime", new SystemTimeReal());
   return {
     name: "SystemContext",
@@ -63,18 +63,73 @@ export const initializeDeploymentContext: ContextInitializer<
 
 export type WebOnlyServiceContext = Pick<
   AppServices,
-  "IntegrationConfig" | "IdentityResolver"
+  | "IntegrationConfig"
+  | "RoleConfig"
+  | "LoginSessionRepo"
+  | "IdentityResolver"
+  | "UserRoleRepo"
+  | "PageAccessControlRepo"
+  | "ResourceClassifier"
 >;
 
 export const initializeWebOnlyServiceContext: ContextInitializer<
   SystemContext & LoggerServiceContext,
   WebOnlyServiceContext
 > = async (container) => {
-  container.register("IntegrationConfig", getIntegrationConfig()).register(
-    "IdentityResolver",
-    ["Logger", "IntegrationConfig"],
-    ({ Logger, IntegrationConfig }) => null! //TODO: 實作並註冊 IdentityResolver
+  const { LoginSessionRepoYaml } = await import(
+    "@/services/LoginSessionRepoYaml"
   );
+  const { UserRoleRepoYaml } = await import("@/services/UserRoleRepoYaml");
+  const { IdentityResolverDefault } = await import(
+    "@/services/IdentityResolverDefault"
+  );
+  const { PageAccessControlRepoDefault } = await import(
+    "@/services/PageAccessControlRepoDefault"
+  );
+  const { ResourceClassifierDefault } = await import(
+    "@/services/ResourceClassifierDefault"
+  );
+  container
+    .register("IntegrationConfig", getIntegrationConfig())
+    .register("RoleConfig", getRoleConfig())
+    .register(
+      "ResourceClassifier",
+      ["IntegrationConfig"],
+      ({ IntegrationConfig }) =>
+        new ResourceClassifierDefault(IntegrationConfig.BASE_URL)
+    )
+    .register(
+      "LoginSessionRepo",
+      ["Logger", "SystemTime"],
+      ({ Logger, SystemTime }) =>
+        new LoginSessionRepoYaml(Logger, "login-sessions.yaml", SystemTime)
+    )
+    .register(
+      "UserRoleRepo",
+      ["Logger"],
+      ({ Logger }) => new UserRoleRepoYaml(Logger, "user-roles.yaml")
+    )
+    .register(
+      "IdentityResolver",
+      ["Logger", "IntegrationConfig", "LoginSessionRepo", "SystemTime"],
+      ({ Logger, IntegrationConfig, LoginSessionRepo, SystemTime }) =>
+        new IdentityResolverDefault(
+          IntegrationConfig.SESSION_COOKIE_NAME,
+          LoginSessionRepo,
+          SystemTime,
+          Logger
+        )
+    )
+    .register(
+      "PageAccessControlRepo",
+      ["Logger", "IntegrationConfig", "RoleConfig"],
+      ({ Logger, IntegrationConfig, RoleConfig }) =>
+        new PageAccessControlRepoDefault(
+          Logger,
+          IntegrationConfig.BASE_URL,
+          RoleConfig.ACCESS_CONTROL_FALLBACK_ROLE
+        )
+    );
   return {
     name: "WebOnlyServiceContext",
   };

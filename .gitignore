@@ -42,3 +42,6 @@ package-lock.json
 **/*.bun
 
 /dist
+/public
+login-sessions.yaml
+user-roles.yaml

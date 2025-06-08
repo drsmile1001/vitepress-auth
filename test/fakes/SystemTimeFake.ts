@@ -1,4 +1,4 @@
-import type { SystemTime } from "@/services/SystemTime.Interface";
+import type { SystemTime } from "@/services/SystemTime";
 
 export class SystemTimeFake implements SystemTime {
   private currentTime: number;

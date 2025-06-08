@@ -1,6 +1,8 @@
 import { Elysia } from "elysia";
 
 import { buildRequestMonitor } from "@/middlewares/RequestMonitor";
+import { buildLoginRoutes } from "@/routes/Login";
+import { buildServeStaticRoutes } from "@/routes/ServeStatic";
 import { AsyncLock } from "@/utils/AsyncLock";
 import { type NamedFinalizer, finalizeAll } from "@/utils/Finalizable";
 import type { Logger } from "@/utils/Logger.Interface";
@@ -73,14 +75,18 @@ export async function buildServerContext(
 function buildServer(container: ServiceContainer<AppServices>) {
   const logger = container.resolve("Logger").extend("Server");
   const { version, name } = container.resolve("AppInfo");
-  const app = new Elysia().use(buildRequestMonitor(container)).get(
-    "/",
-    ({ set }) => {
-      set.headers["Content-Type"] = "text/html";
-      return `${name}. version ${version}  <a href="./swagger">API Docs</a>`;
-    },
-    { detail: { summary: "版本資訊" } }
-  );
+  const app = new Elysia()
+    .use(buildRequestMonitor(container))
+    .use(buildLoginRoutes(container))
+    .use(buildServeStaticRoutes(container))
+    .get(
+      "/",
+      ({ set }) => {
+        set.headers["Content-Type"] = "text/html";
+        return `${name}. version ${version}  <a href="./swagger">API Docs</a>`;
+      },
+      { detail: { summary: "版本資訊" } }
+    );
 
   return {
     app,

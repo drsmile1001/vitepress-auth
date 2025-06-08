@@ -8,7 +8,7 @@ cli
   .command("list-project", "列出所有檔案")
   .option("--ext <ext>", "指定要列出的副檔名，逗號分隔")
   .option("--exclude <dirs>", "排除的目錄，逗號分隔", {
-    default: "node_modules,dist,.git,scripts",
+    default: "node_modules,dist,.git,scripts,public",
   })
   .option("--flat", "是否扁平輸出")
   .option("--output <path>", "輸出檔案", {

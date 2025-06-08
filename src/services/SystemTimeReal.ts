@@ -1,4 +1,4 @@
-import { type SystemTime } from "./SystemTime.Interface";
+import { type SystemTime } from "./SystemTime";
 
 export class SystemTimeReal implements SystemTime {
   now(): Date {

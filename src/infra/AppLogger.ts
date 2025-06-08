@@ -11,7 +11,8 @@ export function getAppLogger(): Logger {
     {},
     emojiMapDefault,
     notProduction,
-    notProduction
+    notProduction,
+    false
   );
 }
 

@@ -1,5 +1,6 @@
 import { write } from "bun";
 
+import { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 import kleur from "kleur";

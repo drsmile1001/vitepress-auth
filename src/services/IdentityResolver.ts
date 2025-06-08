@@ -1,12 +1,4 @@
-export type Identity = {
-  id: string;
-  credential?: AuthCredential;
-};
-
-export type AuthCredential = {
-  type: "bearer-token";
-  token: string;
-};
+import type { Identity } from "@/schemas/Identity";
 
 export const anonymous = Symbol("anonymous");
 export type Anonymous = typeof anonymous;
